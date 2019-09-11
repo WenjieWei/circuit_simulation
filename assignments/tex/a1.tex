@@ -1,0 +1,201 @@
+\documentclass[a4paper,titlepage]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage{indentfirst}
+\usepackage[per-mode=symbol]{siunitx}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage[hidelinks]{hyperref}
+\usepackage[format=plain,font=it]{caption}
+\usepackage{subcaption}
+\usepackage{standalone}
+\usepackage[nottoc]{tocbibind}
+\usepackage[noabbrev,capitalize,nameinlink]{cleveref}
+\usepackage{listings}
+\usepackage{xspace}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usepackage{titlesec}
+\usepackage[cache=false]{minted}
+\usepackage{booktabs}
+\usepackage{csvsimple}
+\newcommand{\MATLAB}{\textsc{Matlab}\xspace}
+\usepackage{siunitx}
+\usepackage[super]{nth}
+\usepackage[titletoc]{appendix}
+
+% Custom commands
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+
+\setminted{linenos,breaklines,fontsize=auto}
+
+%\titleformat*{\section}{\normalsize\bfseries}
+%\titleformat*{\subsection}{\small\bfseries}
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\providecommand*{\listingautorefname}{Listing}
+\newcommand*{\Appendixautorefname}{Appendix}
+
+%opening
+\title{\textbf{ECSE 597: Circuit Simulation and Modeling} \\ Assignment 1}
+\author{Wenjie Wei \\ 260685967}
+\date{\today}
+
+\begin{document}
+	\sloppy	
+	
+	\begin{center}
+		{\LARGE \bf ECSE 597: Circuit Simulations and Modeling}\\
+		{\large Assignment 1, Sept. 10, 2019}\\
+		{Wenjie Wei, 260685967}
+	\end{center}
+	
+	\section{Question 1}
+		Matrix $A$ is given as following:
+		$$
+			A = \begin{bmatrix}
+				2 & 4 & 6 & 2 & 1\\
+				4 & 9 & 14 & 8 & 8\\
+				2 & 6 & 12 & 12 & 21\\
+				4 & 10 & 20 & 17 & 32\\
+				8 & 17 & 30 & 18 & 34
+			\end{bmatrix}.
+		$$
+	
+	\subsection{Doolittle's Algorithm}		
+		To perform the LU decomposition using Doolittle's algorithm, first row of $U$ and first column of $L$ can be calculated by:
+		\begin{equation}
+			u_{1k} = a_{1k}, \quad k = 1, ..., n
+			\label{1st_row}
+		\end{equation}		
+		and
+		\begin{equation}
+			l_{k1} = a_{k1} / u_{11}, \quad k = 2,...,n
+			\label{1st_col}
+		\end{equation}
+		
+		The following equations will be applied to compute the LU decomposition using Doolittle's algorithm:
+		\begin{equation}
+			u_{ik} = a_{ik} - \sum_{m=1}^{i-1} l_{im}u_{mk}, \quad k = i, ..., m
+			\label{rows}
+		\end{equation}
+		\begin{equation}
+			l_{kj} = (a_{kj} - \sum_{m=1}^{j-1} l_{km}u_{mj}) / u_{jj}, \quad k = (j+1), ..., n
+			\label{cols}
+		\end{equation}
+		
+		From Equation \ref{1st_row} and \ref{1st_col}, and define that the diagonal entries of $L$ are 1, we calculate the \textbf{\textit{first row}} of $U$ and the \textbf{\textit{first column}} of $L$:
+		$$
+		U = \begin{bmatrix}
+			2 & 4 & 6 & 2 & 1\\
+			0 & u_{22} & u_{23} & u_{24} & u_{25}\\
+			0 & 0 & u_{33} & u_{34} & u_{35}\\
+			0 & 0 & 0 & u_{44} & u_{45}\\
+			0 & 0 & 0 & 0 & u_{55}
+		\end{bmatrix}, \quad
+		L = \begin{bmatrix}
+			1 & 0 & 0 & 0 & 0\\
+			2 & 1 & 0 & 0 & 0\\
+			1 & l_{32} & 1 & 0 & 0\\
+			2 & l_{42} & l_{43} & 1 & 0\\
+			4 & l_{52} & l_{53} & l_{54} & 1
+		\end{bmatrix}
+		$$
+		
+		Use Equation \ref{rows} and \ref{cols}, and from the $U$ and $L$ obtained above, calculate the rest entries of $L$ and $U$:
+		
+		Second Step: Use Equation \ref{rows}, $u_{22}$ can be calculated as such:
+		\begin{align*}
+			u_{22} &= a_{22} - \sum_{m = 1}^{1}l_{2m}u_{12}\\
+			&= 9 - 2\times4 = 1
+		\end{align*}
+		\begin{align*}
+			l_{32} &= (a_{32} - \sum_{m=1}^{1}l_{3m}u_{m2})/u_{22}\\
+			&= (6 - 1\times 4) / 1 = 2
+		\end{align*}
+		Use the similar techniques, the \textbf{\textit{second row and column}} of $U$ and $L$ are now updated as such:
+		$$
+			U = \begin{bmatrix}
+				2 & 4 & 6 & 2 & 1\\
+				0 & 1 & 2 & 4 & 6\\
+				0 & 0 & u_{33} & u_{34} & u_{35}\\
+				0 & 0 & 0 & u_{44} & u_{45}\\
+				0 & 0 & 0 & 0 & u_{55}
+			\end{bmatrix}, \quad
+			L = \begin{bmatrix}
+				1 & 0 & 0 & 0 & 0\\
+				2 & 1 & 0 & 0 & 0\\
+				1 & 2 & 1 & 0 & 0\\
+				2 & 2 & l_{43} & 1 & 0\\
+				4 & 1 & l_{53} & l_{54} & 1
+			\end{bmatrix}
+		$$
+		
+		Continue using the same equations, and obtain the \textbf{\textit{third row and column}} of $U$ and $L$:
+		
+		$$
+			U = \begin{bmatrix}
+				2 & 4 & 6 & 2 & 1\\
+				0 & 1 & 2 & 4 & 6\\
+				0 & 0 & 2 & 2 & 8\\
+				0 & 0 & 0 & u_{44} & u_{45}\\
+				0 & 0 & 0 & 0 & u_{55}
+			\end{bmatrix}, \quad
+			L = \begin{bmatrix}
+				1 & 0 & 0 & 0 & 0\\
+				2 & 1 & 0 & 0 & 0\\
+				1 & 2 & 1 & 0 & 0\\
+				2 & 2 & 2 & 1 & 0\\
+				4 & 1 & 2 & l_{54} & 1
+			\end{bmatrix}
+		$$
+		
+		Continue using the same equations, and obtain the \textbf{\textit{forth row and column}} of $U$ and $L$:
+		
+		$$
+		U = \begin{bmatrix}
+		2 & 4 & 6 & 2 & 1\\
+		0 & 1 & 2 & 4 & 6\\
+		0 & 0 & 2 & 2 & 8\\
+		0 & 0 & 0 & 1 & 2\\
+		0 & 0 & 0 & 0 & u_{55}
+		\end{bmatrix}, \quad
+		L = \begin{bmatrix}
+		1 & 0 & 0 & 0 & 0\\
+		2 & 1 & 0 & 0 & 0\\
+		1 & 2 & 1 & 0 & 0\\
+		2 & 2 & 2 & 1 & 0\\
+		4 & 1 & 2 & 2 & 1
+		\end{bmatrix}
+		$$
+		
+		And finally, compute $u_{55}$ to obtain the \textbf{\textit{complete}} decomposition of $A$:
+		
+		$$
+		U = \begin{bmatrix}
+		2 & 4 & 6 & 2 & 1\\
+		0 & 1 & 2 & 4 & 6\\
+		0 & 0 & 2 & 2 & 8\\
+		0 & 0 & 0 & 1 & 2\\
+		0 & 0 & 0 & 0 & 4
+		\end{bmatrix}, \quad
+		L = \begin{bmatrix}
+		1 & 0 & 0 & 0 & 0\\
+		2 & 1 & 0 & 0 & 0\\
+		1 & 2 & 1 & 0 & 0\\
+		2 & 2 & 2 & 1 & 0\\
+		4 & 1 & 2 & 2 & 1
+		\end{bmatrix}
+		$$
+		
+		Verify this result by doing a cross product, and it is verified that 
+		$$
+			L \times U = A.
+		$$
+		
+	\subsection{Gaussian Version of Doolittle's Algorithm}
+\end{document}
