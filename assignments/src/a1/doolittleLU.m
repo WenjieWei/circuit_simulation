@@ -72,8 +72,6 @@ function [L, U] = doolittleLU(A)
             L(k, j) = (A(k, j) - tempSum) / U(j, j);
         end
     end
-    
-    disp('Decomposition complete. Exiting...')
 end
 
 
