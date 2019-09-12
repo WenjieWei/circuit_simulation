@@ -10,6 +10,7 @@ A = [2, 4, 6, 2, 1;...
      8, 17, 30, 18, 34];
  
 [L, U] = doolittleLU(A);
+[L1, U1] = gaussianLU(A);
 
 
  

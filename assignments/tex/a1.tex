@@ -198,4 +198,158 @@
 		$$
 		
 	\subsection{Gaussian Version of Doolittle's Algorithm}
+		Use Gaussion steps to perform the Doolittle's algorithm. 
+		
+		Choose $a_{11}$ as the pivot as the first step, and divide every entry of $A$ below the pivot by the pivot, we obtain that
+		
+		$$
+			A = \begin{bmatrix}
+				\textcolor{red}{2} & 4 & 6 & 2 & 1\\
+				4 & 9 & 14 & 8 & 8\\
+				2 & 6 & 12 & 12 & 21\\
+				4 & 10 & 20 & 17 & 32\\
+				8 & 17 & 30 & 18 & 34
+			\end{bmatrix} \rightarrow \begin{bmatrix}
+				\textcolor{red}{2} & 4 & 6 & 2 & 1\\
+				\textbf{2} & 9 & 14 & 8 & 8\\
+				\textbf{1} & 6 & 12 & 12 & 21\\
+				\textbf{2} & 10 & 20 & 17 & 32\\
+				\textbf{4} & 17 & 30 & 18 & 34
+			\end{bmatrix}
+		$$
+		
+		After this step, overwrite each entry from $a_{22}$ to $a_{55}$, such that 
+		$$
+			a_{ij} \rightarrow a_{ij} - a_{ik} \times a_{kj}
+		$$
+		where $k$ stands for the row index of the pivot. 
+		
+		After this step, we obtain a new $A$ matrix as shown below:
+		$$
+			A = \begin{bmatrix}
+				2 & 4 & 6 & 2 & 1\\
+				2 & 9 & 14 & 8 & 8\\
+				1 & 6 & 12 & 12 & 21\\
+				2 & 10 & 20 & 17 & 32\\
+				4 & 17 & 30 & 18 & 34
+			\end{bmatrix} \rightarrow \begin{bmatrix}				
+				2 & 4 & 6 & 2 & 1\\
+				2 & 1 & 2 & 4 & 6\\
+				1 & 2 & 6 & 10 & 20\\
+				2 & 2 & 8 & 13 & 30\\
+				4 & 1 & 6 & 10 & 30
+			\end{bmatrix}
+		$$
+		
+		Move the pivot to $a_{22}$, and perform the same procedures like what is done above. 
+		
+		Step 2:
+		$$
+			A = \begin{bmatrix}				
+				2 & 4 & 6 & 2 & 1\\
+				2 & \textcolor{red}{1} & 2 & 4 & 6\\
+				1 & 2 & 6 & 10 & 20\\
+				2 & 2 & 8 & 13 & 30\\
+				4 & 1 & 6 & 10 & 30
+			\end{bmatrix} \rightarrow \begin{bmatrix}				
+				2 & 4 & 6 & 2 & 1\\
+				2 & \textcolor{red}{1} & 2 & 4 & 6\\
+				1 & 2 & 6 & 10 & 20\\
+				2 & 2 & 8 & 13 & 30\\
+				4 & 1 & 6 & 10 & 30
+			\end{bmatrix} \rightarrow \begin{bmatrix}				
+				2 & 4 & 6 & 2 & 1\\
+				2 & \textcolor{red}{1} & 2 & 4 & 6\\
+				1 & 2 & 2 & 2 & 8\\
+				2 & 2 & 4 & 5 & 18\\
+				4 & 1 & 4 & 6 & 24
+			\end{bmatrix}
+		$$
+		
+		Step 3:
+		$$
+		A = \begin{bmatrix}				
+				2 & 4 & 6 & 2 & 1\\
+				2 & 1 & 2 & 4 & 6\\
+				1 & 2 & \textcolor{red}{2} & 2 & 8\\
+				2 & 2 & 4 & 5 & 18\\
+				4 & 1 & 4 & 6 & 24
+			\end{bmatrix} \rightarrow \begin{bmatrix}				
+				2 & 4 & 6 & 2 & 1\\
+				2 & 1 & 2 & 4 & 6\\
+				1 & 2 & \textcolor{red}{2} & 2 & 8\\
+				2 & 2 & 2 & 5 & 18\\
+				4 & 1 & 2 & 6 & 24
+			\end{bmatrix} \rightarrow \begin{bmatrix}				
+				2 & 4 & 6 & 2 & 1\\
+				2 & 1 & 2 & 4 & 6\\
+				1 & 2 & \textcolor{red}{2} & 2 & 8\\
+				2 & 2 & 2 & 1 & 2\\
+				4 & 1 & 2 & 2 & 8
+			\end{bmatrix}
+		$$
+		
+		Step 4:
+		$$
+			A = \begin{bmatrix}				
+				2 & 4 & 6 & 2 & 1\\
+				2 & 1 & 2 & 4 & 6\\
+				1 & 2 & 2 & 2 & 8\\
+				2 & 2 & 2 & \textcolor{red}{1} & 2\\
+				4 & 1 & 2 & 2 & 8
+			\end{bmatrix} \rightarrow \begin{bmatrix}				
+				2 & 4 & 6 & 2 & 1\\
+				2 & 1 & 2 & 4 & 6\\
+				1 & 2 & 2 & 2 & 8\\
+				2 & 2 & 2 & \textcolor{red}{1} & 2\\
+				4 & 1 & 2 & 2 & 8
+			\end{bmatrix} \rightarrow \begin{bmatrix}				
+				2 & 4 & 6 & 2 & 1\\
+				2 & 1 & 2 & 4 & 6\\
+				1 & 2 & 2 & 2 & 8\\
+				2 & 2 & 2 & \textcolor{red}{1} & 2\\
+				4 & 1 & 2 & 2 & 4
+			\end{bmatrix}
+		$$
+		
+		After these processes, we obtain the matrices $L$ and $U$ in separated format:
+		$$
+		L = \begin{bmatrix}
+		1 & 0 & 0 & 0 & 0\\
+		2 & 1 & 0 & 0 & 0\\
+		1 & 2 & 1 & 0 & 0\\
+		2 & 2 & 2 & 1 & 0\\
+		4 & 1 & 2 & 2 & 1
+		\end{bmatrix}, \quad		
+		U = \begin{bmatrix}
+		2 & 4 & 6 & 2 & 1\\
+		0 & 1 & 2 & 4 & 6\\
+		0 & 0 & 2 & 2 & 8\\
+		0 & 0 & 0 & 1 & 2\\
+		0 & 0 & 0 & 0 & 4
+		\end{bmatrix}		
+		$$
+		
+		This result agrees with the results obtained by Doolittle's algorithm, and it is verified that 
+		$$
+			L\times U = A.
+		$$
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
