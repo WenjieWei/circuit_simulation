@@ -2,29 +2,30 @@ clear;
 clc;
 close all;
 
-%% Test the LU decompositions. 
-A = [2, 4, 6, 2, 1;...
-     4, 9, 14, 8, 8;...
-     2, 6, 12, 12, 21;...
-     4, 10, 20, 17, 32;...
-     8, 17, 30, 18, 34];
- 
-[L, U] = doolittleLU(A);
-[L1, U1] = gaussianLU(A);
-
-
- 
-%  U = [2, 4, 6, 2, 1;...
-%       0, 1, 2, 4, 6;...
-%       0, 0, 2, 2, 8;...
-%       0, 0, 0, 1, 2;...
-%       0, 0, 0, 0, 4];
-%   
-% L = [1, 0, 0, 0, 0;...
-%      2, 1, 0, 0, 0;...
-%      1, 2, 1, 0, 0;...
-%      2, 2, 2, 1, 0;...
-%      4, 1, 2, 2, 1];
- 
-%  [L, U] = lu(A);
+% Random Tester Matrices. 
+for testcase = 1:10
+    disp(['Verifying random tester matrix ' 'No.' num2str(testcase)]);
+    
+    size = randi([3, 10]);    
+    mat = randi(50, size, size);
+    
+    [L, U] = doolittleLU(mat);
+    [L1, U1] = gaussianLU(mat);
+    result = L*U;
+    result1 = L1*U1;
+    
+    for i = 1:size
+        for j = 1:size
+            if round(result(i, j), 2) ~= round(mat(i, j), 2)                
+                disp(['Doolittle for mat' ' ' num2str(testcase) ' ' 'failed.'])
+            end
+            
+            if round(result1(i, j), 2) ~= round(mat(i, j), 2)                
+                disp(['Gaussian for mat' ' ' num2str(testcase) ' ' 'failed.'])
+            end
+        end
+    end
+    
+    disp([num2str(testcase) ' ' 'successful.'])
+end
  

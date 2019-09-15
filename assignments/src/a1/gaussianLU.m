@@ -13,7 +13,6 @@
 % Matlab version used: 2017b.
 % Author: Wenjie Wei, McGILL ID: 260685967
 % Updated: Sept. 11, 2019
-% Revision: v1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Perform the decomposition.
