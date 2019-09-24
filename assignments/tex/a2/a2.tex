@@ -57,7 +57,7 @@
 			\centering
 			\begin{circuitikz}[american voltages]
 				\draw
-				(0, 0) to [V, *-*] (0, 3) node[label={[font=\footnotesize]above:$N_1$}]{}
+				(0, 3)node[label={[font=\footnotesize]above:$N_1$}]{} to [V, l=$2V$,*-*] (0, 0) 
 				(0, 3) to [R, l=$50\Omega$, *-*] (3, 3) node[label={[font=\footnotesize]above:$N_2$}]{}
 				to [R, l=$50\Omega$, *-*] (3,0)
 				(3, 3) to [short, *-*] (6, 3)
