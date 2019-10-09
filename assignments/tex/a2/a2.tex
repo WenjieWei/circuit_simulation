@@ -73,4 +73,42 @@
 			\label{circuit}
 		\end{figure}
 	
+		Where $I_s = 1\times10^{-15}A$, $V_t = 26\times10^{-3}V$.
+		
+	\section{Simulation Results}
+		The result computed after running the test bench is:
+		$$
+			V_1 = 2V,\quad V_2 = 1.2245V
+		$$
+		and the current flowing through the voltage source is calculated to be:
+		$$
+			I_E = -0.0245A
+		$$
+		defining that the direction of the current is from Node 1 to ground. 
+	\section{Plotting Result}
+		Figure \ref{result} below shows the plotting result of the norm of $\Delta x$ after each iteration. 
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.5\linewidth]{result}
+			\caption{Plotting Results of the Norm of $\Delta x$ After Newton-Raphson Iterations}
+			\label{result}
+		\end{figure}
+	\begin{appendices}
+		
+		\section{Code Listings} \label{appendix:code}
+		
+		\setminted{linenos,breaklines,fontsize=\footnotesize}
+		
+		\begin{center}
+			\captionof{listing}{MATLAB Function Calculating the Jacobian (\texttt{nlJacobian.py}).}
+			\inputminted{matlab}{../../src/a2/nlJacobian.m}
+			\label{jacobian}
+		\end{center}
+		
+		\begin{center}
+			\captionof{listing}{MATLAB Function Performing DC Simulation (\texttt{dcsolve.py}).}
+			\inputminted{matlab}{../../src/a2/dcsolve.m}
+			\label{dc}
+		\end{center}
+	\end{appendices}
 \end{document}
