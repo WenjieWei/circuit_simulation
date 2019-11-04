@@ -7,6 +7,14 @@ function Xdc = dcsolvecont(n_steps,maxerr)
     % linearly spaced (the matlab function "linspace" may be useful).
     % maxerr is the stopping criterion for newton iteration (stop iteration
     % when norm(deltaX)<maxerr
+    global G
+    
+    Xguess = zeros(size(G, 1), 1);
+    alpha = linspace(0, 1, n_steps);
+    
+    for i = 1:size(alpha, 2)
+        Xdc = dcsolvealpha(Xguess, alpha(i), maxerr);
+        
+        Xguess = Xdc;
+    end
 end
-
-

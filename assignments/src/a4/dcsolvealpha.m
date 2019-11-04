@@ -8,9 +8,26 @@ function Xdc = dcsolvealpha(Xguess,alpha,maxerr)
     % iteration when norm(deltaX)<maxerr
     % Oupputs:
     % Xdc is a vector containing the solution of the augmented system
-    global G DIODE_LIST
+    global G b
     
+    Xdc = Xguess;
     
+    converged = false;
+    while ~converged
+        Phi = G * Xguess + f_vector(Xdc) - alpha .* b;
+        J = nlJacobian(Xdc);
+        
+        %dX = [dX (-inv(J) * Phi)];
+        %Xdc = Xdc + dX(:, iteration + 1);
+        %Xguess = Xguess + dX(:, iteration + 1);
+        dX = -inv(J) * Phi;
+        Xdc = Xdc + dX;
+        Xguess = Xguess + dX;
+        
+        if norm(dX, 2) < maxerr
+            converged = true;
+        end
+    end
 end
 
 %% Function to compute the Jacobian during Newton-Ralphson Iterations. 
@@ -24,48 +41,32 @@ function J = nlJacobian(X)
     % Diode curve: I = Is(exp(V/VT) - 1)
     global G DIODE_LIST
     
-    startNode = DIODE_LIST.node1;
-    endNode = DIODE_LIST.node2;
-    Is = DIODE_LIST.Is;
-    Vt = DIODE_LIST.Vt;
-%     
-%     v1 = X(startNode);
-%     v2 = X(endNode);
-%     
-%     F = zeros(size(G, 1), size(G, 2));
-%     
-%     
     % Create the Jacobian matrix F of f(x).
     F = zeros(size(G, 1), size(G, 2));
-
-    if startNode ~= 0
-        v1 = X(startNode);
+    
+    for i = 1:size(DIODE_LIST, 2)
+        diode = DIODE_LIST(i);
+    
+        v1 = X(diode.node1);
+        v2 = X(diode.node2);
+        n1 = diode.node1;
+        n2 = diode.node2;
         
-        if endNode ~= 0
-            v2 = X(endNode);
-            
-            F(startNode, startNode) = (Is / Vt) * exp((v1 - v2) / Vt);
-            F(startNode, endNode) = -(Is / Vt) * exp((v1 - v2) / Vt);
-            F(endNode, startNode) = -(Is / Vt) * exp((v1 - v2) / Vt);
-            F(endNode, endNode) = (Is / Vt) * exp((v1 - v2) / Vt);
-        else
-            v2 = 0;
-            F(startNode, startNode) = (Is / Vt) * exp((v1 - v2) / Vt);
+        dF = (diode.Is / diode.Vt) * exp((v1 - v2) / diode.Vt);
+        
+        if diode.node1 ~= 0
+            F(n1, n1) = F(n1, n1) + dF;
         end
-    else
-            
+        
+        if diode.node2 ~= 0
+            F(n2, n2) = F(n2, n2) + dF;
+        end
+        
+        if diode.node1 ~= 0 && diode.node2 ~= 0
+            F(n1, n2) = F(n1, n2) - dF;
+            F(n2, n1) = F(n2, n1) - dF;
+        end
     end
     
     J = G + F;
 end
-
-
-
-
-
-
-
-
-
-
-

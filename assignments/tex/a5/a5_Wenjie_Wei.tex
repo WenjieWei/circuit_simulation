@@ -1,0 +1,188 @@
+\documentclass[a4paper,titlepage, 12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage{indentfirst}
+\usepackage[per-mode=symbol]{siunitx}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage[hidelinks]{hyperref}
+\usepackage[format=plain,font=it]{caption}
+\usepackage{subcaption}
+\usepackage{standalone}
+\usepackage[nottoc]{tocbibind}
+\usepackage[noabbrev,capitalize,nameinlink]{cleveref}
+\usepackage{listings}
+\usepackage{xspace}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usepackage{titlesec}
+\usepackage[cache=false]{minted}
+\usepackage{booktabs}
+\usepackage{csvsimple}
+\newcommand{\MATLAB}{\textsc{Matlab}\xspace}
+\usepackage{siunitx}
+\usepackage[super]{nth}
+\usepackage[titletoc]{appendix}
+
+% Custom commands
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+
+\setminted{linenos,breaklines,fontsize=auto}
+
+%\titleformat*{\section}{\normalsize\bfseries}
+%\titleformat*{\subsection}{\small\bfseries}
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\providecommand*{\listingautorefname}{Listing}
+\newcommand*{\Appendixautorefname}{Appendix}
+
+
+\begin{document}
+	\sloppy	
+	
+	\begin{center}
+		{\LARGE \bf ECSE 597: Circuit Simulations and Modeling}\\
+		{\large Assignment 5a, \quad \today}\\
+		{\large Wenjie Wei, 260685967}
+	\end{center}
+
+	\section{Question 1}
+		\subsection{Step Size of Forward Euler}
+			To use forward Euler, if the pole $\lambda$ is real, we use the formula 
+			\begin{equation}
+				|1 + h\lambda| < 1 \quad \rightarrow \quad -2 < h\lambda < 0
+				\label{feuler_equ}
+			\end{equation}
+			to find the appropriate size of each step, leading to the following equations: 
+			
+			\begin{itemize}
+				\item $\lambda = -5$, (\ref{feuler_equ}) $\rightarrow$ $0 < h < \frac{2}{5}$
+								
+				\item $\lambda = -3$, (\ref{feuler_equ}) $\rightarrow$ $0 < h < \frac{2}{3}$
+				
+				\item $\lambda = -2$, (\ref{feuler_equ}) $\rightarrow$ $0 < h < 1$
+				
+				\item $\lambda = -7$, (\ref{feuler_equ}) $\rightarrow$ $0 < h < \frac{2}{7}$
+				
+				\item $\lambda = -8$, (\ref{feuler_equ}) $\rightarrow$ $0 < h < \frac{1}{4}$
+			\end{itemize}
+		
+			Choose the smallest value here, and $(0, \frac{1}{4})$ is an appropriate interval of $h$. 
+			
+		\subsection{Step Size of Backward Euler}
+			Due to the stability of Backward Euler method, the system is guaranteed to be stable as long as Re\{$\lambda$\} $< 0$. Since all poles given in the question have negative real values, the Backward Euler system is stable regardless of the step size. 
+			
+		\subsection{Trapezoidal Rule}
+			The system solved by Trapezoidal Rule is stable when 
+			$$
+				Re\{h\lambda\} < 0
+			$$
+			
+			Since all poles given by the question are negative, this system with step size of $h > 0$ is guaranteed to be stable. 
+
+	\section{Question 2}
+		Use the Adam-Moulton integration method shown in Equation \ref{AM_Integration} to derive a difference equation of MNA. 
+		\begin{equation}
+			x_n = x_{n-1} + \frac{5h}{12}\dot{x}_n + \frac{8h}{12}\dot{x}_{n-1} + \frac{h}{12}\dot{x}_{n-2}
+			\label{AM_Integration}
+		\end{equation}
+		
+		From Equation \ref{AM_Integration}, change the form:
+		\begin{equation}
+			5\dot{x}_{n} + 8\dot{x}_{n-1} + \dot{x}_{n-2} = \frac{12}{h}(x_n - x_{n-1})
+			\label{AM_Transformed}
+		\end{equation}
+		
+		From the MNA equation 
+		$$
+			\boldsymbol{G}\boldsymbol{x}_n + \boldsymbol{C}\boldsymbol{\dot{x}}_n + \boldsymbol{f}(\boldsymbol{x}_n)= \boldsymbol{b}_n
+		$$
+		for every $\boldsymbol{x}_n$. Replace $n$ by $n-1$ and $n-2$, and integrate the terms of $\boldsymbol{G}$, $\boldsymbol{C}$, and $\boldsymbol{b}$:
+		\begin{equation}
+			\boldsymbol{G}(\boldsymbol{x_n} + \boldsymbol{x_{n-1}} + \boldsymbol{x_{n-2}}) + \boldsymbol{C}(\boldsymbol{\dot{x}_n} + \boldsymbol{\dot{x}_{n-1}} + \boldsymbol{\dot{x}_{n-2}}) + \boldsymbol{F}= \boldsymbol{b}_n + \boldsymbol{b}_{n - 1} + \boldsymbol{b}_{n-2}
+			\label{MNA_n}
+		\end{equation}
+		where 
+		$$
+			\boldsymbol{F} = \boldsymbol{f}(\boldsymbol{x}_n) + \boldsymbol{f}(\boldsymbol{x}_{n - 1}) + \boldsymbol{f}(\boldsymbol{x}_{n - 2})
+		$$
+		
+		Plug Equation \ref{AM_Transformed} into \ref{MNA_n}, and we can arrive at:
+		\begin{align*}
+			\boldsymbol{G}(\boldsymbol{x_n} + \boldsymbol{x_{n-1}} + \boldsymbol{x_{n-2}}) + \frac{12C}{h}(\boldsymbol{x}_n + \boldsymbol{x}_{n - 1}) + \boldsymbol{F} &= 5\boldsymbol{b}_n + 8\boldsymbol{b}_{n-1} + \boldsymbol{b}_{n-2}\\
+			(5\boldsymbol{G} + \frac{12\boldsymbol{C}}{h})\boldsymbol{x}_n + (8\boldsymbol{G} - \frac{12\boldsymbol{C}}{h})\boldsymbol{x}_{n-1} + \boldsymbol{G}\boldsymbol{x}_{n - 2} + \boldsymbol{F} &= 5\boldsymbol{b}_n + 8\boldsymbol{b}_{n-1} + \boldsymbol{b}_{n-2}
+		\end{align*}
+		which is the solution difference equation for this question. 
+		
+	\section{Question 3}
+		For simplicity, use LU to denote the LU decomposition and F/B to denote the forward / backward substitution. Table below shows the computational cost of each method, with steps followed. 
+		
+		\begin{table}[H]
+			\begin{center}
+				\begin{tabular}{c|c|c|c}
+						& Sparse Ordering & LU & F/B\\\hline
+					Perturbation & 1 & 4000 & 4000\\\hline
+					Differentiation & 1 & 1000 & 4000\\\hline
+					Adjoint & 1 & 1000 & 6000
+				\end{tabular}
+				\label{Solution}
+			\end{center}
+		\end{table}
+		\subsection{Perturbation Method}
+			\begin{itemize}
+				\item 1 sparse ordering for the entire process;
+				\item 1 LU and 1 F/B to find the frequency response;
+				\item According to the equation
+				$$
+					(A + \Delta A)(x + \Delta x) = b
+				$$
+				A is changing for each sensitivity test, therefore, 1 additional LU and F/B is required to find the sensitivity with respect to every additional parameter.
+			\end{itemize}
+			
+			Therefore, the Perturbation method will need 1 sparse ordering. 1000 frequency points result in 1000 LU and F/B, and the three sensitivity parameters lead to an additional 3000 LU and F/B calculations. 
+		
+		\subsection{Differentiation Method}
+			\begin{itemize}
+				\item 1 sparse ordering for the entire process;
+				\item Matrix $\boldsymbol{A}$ is reused at each frequency point, thus only 1 LU is needed. But the sensitivity with respect to the frequency requires an LU and F/B at each frequency points. 
+				\item An additional F/B is needed to compute sensitivity with respect to each parameter. 
+			\end{itemize}
+		
+			Therefore, the Differentiation method requires 1 sparse ordering, 1000 LU and F/B for overall sensitivity and frequency response, and an additional 3000 F/B for each sensitivity parameter. 
+			
+		\subsection{Adjoint Method}
+			\begin{itemize}
+				\item 1 sparse ordering for the entire process;
+				\item 1 LU and 1 F/B for sensitivity at each frequency point;
+				\item 1 additional F/B for sensitivity analysis with respect to all output nodes. 
+			\end{itemize}
+			
+			Therefore, the Adjoint method requires 1 sparse ordering, 1000 LU and F/B for overall sensitivity and frequency response, and an additional 5000 F/B for 5 output nodes. 
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
