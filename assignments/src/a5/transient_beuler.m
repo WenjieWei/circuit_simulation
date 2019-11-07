@@ -19,7 +19,7 @@ function [tpoints,r] = transient_beuler(t1,t2,h,out)
     
     r = zeros(size(G, 1), size(tpoints, 2));
     for i = 2:size(r, 2)
-        r(:, i) = (G + C / h) \ (BTime((i - 1) * h) + C / h * r(:, i - 1));
+        r(:, i) = (G + C / h) \ (BTime(t1 + (i - 1) * h) + C / h * r(:, i - 1));
     end
     
     r = r(out, :);
